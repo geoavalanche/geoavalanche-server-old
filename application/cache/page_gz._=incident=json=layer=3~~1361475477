@@ -1,0 +1,43 @@
+3e1ca59ebc1948449ae422d93aa314cb57fb7b41<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:georss="http://www.georss.org/georss" xmlns="http://www.w3.org/2005/Atom">
+  <title>GeoCommons Search: </title>
+  <id>http://geocommons.com/overlays/index</id>
+  <link type="application/atom+xml" href="http://geocommons.com/users/xbartolone/overlays.atom?order=descending&amp;page=1&amp;sort=created" rel="self"/>
+  <link type="application/vnd.google-earth.kml+xml" href="http://geocommons.com/users/xbartolone/overlays.kml?order=descending&amp;page=1&amp;sort=created" rel="alternate"/>
+  <link type="text/html" href="http://geocommons.com/users/xbartolone/overlays.html?order=descending&amp;page=1&amp;sort=created" rel="alternate"/>
+  <updated>2013-02-22T12:29:35Z</updated>
+  <link type="application/opensearchdescription+xml" href="http://geocommons.com/opensearch.xml" rel="search"/>
+  <opensearch:totalResults>2</opensearch:totalResults>
+  <entry>
+    <title>Savoy Alps</title>
+    <link type="text/html" href="http://geocommons.com/overlays/324154.html" rel="alternate"/>
+    <link type="application/vnd.google-earth.kml+xml" href="http://geocommons.com/overlays/324154.kml" rel="alternate"/>
+    <link type="application/atom+xml;type=entry" href="http://geocommons.com/overlays/324154.atom" rel="edit"/>
+    <id>http://geocommons.com/overlays/324154</id>
+    <updated>2013-02-22T17:01:06Z</updated>
+    <contributor>
+      <name>xbartolone</name>
+      <uri>http://geocommons.com/users/xbartolone</uri>
+    </contributor>
+    <category scheme="http://geocommons.com/tags" term="peaks"/>
+    <georss:box>28.2166 -19.65 71.0833 47.8578</georss:box>
+    <content type="html">
+    </content>
+  </entry>
+  <entry>
+    <title>Clouds</title>
+    <link type="text/html" href="http://geocommons.com/overlays/324153.html" rel="alternate"/>
+    <link type="application/vnd.google-earth.kml+xml" href="http://geocommons.com/overlays/324153.kml" rel="alternate"/>
+    <link type="application/atom+xml;type=entry" href="http://geocommons.com/overlays/324153.atom" rel="edit"/>
+    <id>http://geocommons.com/overlays/324153</id>
+    <updated>2013-02-22T16:53:18Z</updated>
+    <contributor>
+      <name>xbartolone</name>
+      <uri>http://geocommons.com/users/xbartolone</uri>
+    </contributor>
+    <category scheme="http://geocommons.com/tags" term=""/>
+    <georss:box>-90.0 -180.0 90.0 180.0</georss:box>
+    <content type="html">
+    </content>
+  </entry>
+</feed>
