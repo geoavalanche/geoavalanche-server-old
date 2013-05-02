@@ -415,12 +415,14 @@ class map_Core {
 		$layer->openlayers = "OSM.CycleMap";
 		$layer->title = 'OSM Cycling Map';
 		$layer->description = 'OpenStreetMap with highlighted bike lanes';
-		$layer->api_url = 'https://www.openstreetmap.org/openlayers/OpenStreetMap.js';
+		//$layer->api_url = 'https://www.openstreetmap.org/openlayers/OpenStreetMap.js';
+		$layer->api_url = 'http://geoavalanche.org/incident/media/js/OpenStreetMap.js';
 		$layer->data = array(
 			'baselayer' => TRUE,
 			'attribution' => '&copy;<a href="@ccbysa">CCBYSA</a> 2010
 				<a href="@openstreetmap">OpenStreetMap.org</a> contributors',
-			'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
+		//	'url' => 'http://andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png',
+			'url' => 'http://a.tile3.opencyclemap.org/landscape/${z}/${x}/${y}.png',
 			'type' => '',
 			'transitionEffect' => 'resize',
 		);
