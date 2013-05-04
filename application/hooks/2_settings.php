@@ -28,7 +28,7 @@ foreach($settings as $key => $setting)
 // Set Site Timezone
 if (function_exists('date_default_timezone_set'))
 {
-	$timezone = $settings['site_timezone'];
+	$timezone = isset($settings['site_timezone']) ? $settings['site_timezone'] : null;
 	// Set default timezone, due to increased validation of date settings
 	// which cause massive amounts of E_NOTICEs to be generated in PHP 5.2+
 	date_default_timezone_set(empty($timezone) ? date_default_timezone_get() : $timezone);
@@ -36,26 +36,26 @@ if (function_exists('date_default_timezone_set'))
 }
 
 // Cache Settings
-$cache_pages = ($settings['cache_pages']) ? TRUE : FALSE;
+$cache_pages = (isset($settings['cache_pages']) AND $settings['cache_pages']) ? TRUE : FALSE;
 Kohana::config_set('cache.cache_pages', $cache_pages);
-Kohana::config_set('cache.default.lifetime', $settings['cache_pages_lifetime']);
+Kohana::config_set('cache.default.lifetime', isset($settings['cache_pages_lifetime']) ? $settings['cache_pages_lifetime'] : 1800);
 
-$default_map = $settings['default_map'];
+$default_map = isset($settings['default_map']) ? $settings['default_map'] : 'osm_mapnik';
 $map_layer = map::base($default_map);
-if (isset($map_layer->api_url) AND $map_layer->api_url != '')
+if (! empty($map_layer->api_url))
 {
-	Kohana::config_set('settings.api_url', 
-		"<script type=\"text/javascript\" src=\"".$map_layer->api_url."\"></script>");
+	Kohana::config_set('settings.api_url', $map_layer->api_url);
 }
 
 // And in case you want to display all maps on one page...
-$api_google = $settings['api_google'];
-$api_live = $settings['api_live'];
-Kohana::config_set('settings.api_url_all', 
-	"<script type=\"text/javascript\" src=\"https://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6\"></script>\n"
-	."<script type=\"text/javascript\" src=\"https://maps.google.com/maps/api/js?v=3.7&amp;sensor=false\"></script>\n"
-	. html::script('https://www.openstreetmap.org/openlayers/OpenStreetMap.js')
-);
+$api_url_all = array();
+foreach (map::base() as $layer)
+{
+	if (empty($layer->api_url)) continue;
+	// Add to array, use url as key to avoid dupes
+	$api_url_all[$layer->api_url] = $layer->api_url;
+}
+Kohana::config_set('settings.api_url_all', $api_url_all);
 
 // Additional Mime Types (KMZ/KML)
 Kohana::config_set('mimes.kml', array('text/xml'));
@@ -70,3 +70,21 @@ if ( ! Kohana::config('settings.forgot_password_secret'))
 	Kohana::config_set('settings.forgot_password_secret', $key);
 	$cache->delete($subdomain.'_settings');
 }
+
+// Set dfault value for external site protocol
+if ( ! Kohana::config('config.external_site_protocol'))
+{
+	Kohana::config_set('config.external_site_protocol', 'https');
+}
+
+// Default for allowed_html in case upgraders don't add it to config.php
+if ( ! Kohana::config('config.allowed_html') )
+{
+  Kohana::config_set('config.allowed_html', 'a[href|title],p,img[src|alt],br,b,u,strong,em,i'); 
+}
+// Default for allowed iframe regexp, in case upgraders don't add it to config.php
+if ( ! Kohana::config('config.allowed_iframe_regexp') )
+{
+  Kohana::config_set('config.allowed_iframe_regexp', '%^http://(www.youtube.com/embed/|player.vimeo.com/video/|w.soundcloud.com/player)%'); 
+}
+

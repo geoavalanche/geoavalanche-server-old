@@ -14,7 +14,7 @@
   	  ?>
 
 		<h1 class="report-title"><?php
-			echo htmlentities($incident_title, ENT_QUOTES, "UTF-8");
+			echo html::escape($incident_title);
 
 			// If Admin is Logged In - Allow For Edit Link
 			if ($logged_in)
@@ -71,40 +71,39 @@
 
 		<!-- start report media -->
 		<div class="<?php if( count($incident_photos) > 0 || count($incident_videos) > 0){ echo "report-media";}?>">
-	    <?php
-	    // if there are images, show them
-	    if( count($incident_photos) > 0 )
-	    {
-			echo '<div id="report-images">';
-			foreach ($incident_photos as $photo)
+			<?php
+			// if there are images, show them
+			if( count($incident_photos) > 0 )
 			{
-				echo '<a class="photothumb" rel="lightbox-group1" href="'.$photo['large'].'"><img alt="'.htmlentities($incident_title, ENT_QUOTES, "UTF-8").'" src="'.$photo['thumb'].'"/></a> ';
-			};
-			echo '</div>';
-	    }
+				echo '<div id="report-images">';
+				foreach ($incident_photos as $photo)
+				{
+					echo '<a class="photothumb" rel="lightbox-group1" href="'.$photo['large'].'"><img alt="'.html::escape($incident_title).'" src="'.$photo['thumb'].'"/></a> ';
+				};
+				echo '</div>';
+			}
 
-	    // if there are videos, show those too
-	    if( count($incident_videos) > 0 )
-	    {
-	      echo '<div id="report-video"><ol>';
+			// if there are videos, show those too
+			if( count($incident_videos) > 0 )
+			{
+				echo "<div id=\"report-video\"><ul>\n";
+				// embed the video codes
+				foreach( $incident_videos as $incident_video)
+				{
+					echo "<li>\n\t";
+					echo $videos_embed->embed($incident_video, FALSE, FALSE);
+					echo "\n</li>\n";
+				};
+  			echo "</ul></div>";
 
-          // embed the video codes
-          foreach( $incident_videos as $incident_video)
-          {
-            echo '<li>';
-            $videos_embed->embed($incident_video,'');
-            echo '</li>';
-          };
-  			echo '</ol></div>';
-
-	    }
-	    ?>
+			}
+			?>
 		</div>
 
 		<!-- start report description -->
 		<div class="report-description-text">
 			<h5><?php echo Kohana::lang('ui_main.reports_description');?></h5>
-			<?php echo nl2br($incident_description); ?>
+			<?php echo html::clean(nl2br($incident_description)); ?>
 			<br/>
 
 

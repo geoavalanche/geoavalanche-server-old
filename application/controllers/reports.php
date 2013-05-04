@@ -24,7 +24,6 @@ class Reports_Controller extends Main_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->themes->validator_enabled = TRUE;
 
 		// Is the Admin Logged In?
 		$this->logged_in = Auth::instance()->logged_in();
@@ -145,9 +144,6 @@ class Reports_Controller extends Main_Controller {
 		$this->template->content->report_stats->avg_reports_per_day = $avg_reports_per_day;
 		$this->template->content->report_stats->percent_verified = $percent_verified;
 		$this->template->content->services = Service_Model::get_array();
-
-		$this->template->header->header_block = $this->themes->header_block();
-		$this->template->footer->footer_block = $this->themes->footer_block();
 	}
 
 	/**
@@ -413,10 +409,6 @@ class Reports_Controller extends Main_Controller {
 		}
 		$this->themes->js->geometries = $form['geometry'];
 
-
-		// Rebuild Header Block
-		$this->template->header->header_block = $this->themes->header_block();
-		$this->template->footer->footer_block = $this->themes->footer_block();
 	}
 
 	 /**
@@ -555,10 +547,10 @@ class Reports_Controller extends Main_Controller {
 					}
 					else
 					{
-						$comment->comment_author = strip_tags($post->comment_author);
-						$comment->comment_email = strip_tags($post->comment_email);
+						$comment->comment_author = html::strip_tags($post->comment_author, FALSE);
+						$comment->comment_email = html::strip_tags($post->comment_email, FALSE);
 					}
-					$comment->comment_description = strip_tags($post->comment_description);
+					$comment->comment_description = html::strip_tags($post->comment_description, FALSE);
 					$comment->comment_ip = $_SERVER['REMOTE_ADDR'];
 					$comment->comment_date = date("Y-m-d H:i:s",time());
 
@@ -579,17 +571,20 @@ class Reports_Controller extends Main_Controller {
 					Event::run('ushahidi_action.comment_add', $comment);
 
 					// Notify Admin Of New Comment
-					$send = notifications::notify_admins(
-						"[".Kohana::config('settings.site_name')."] ".
-							Kohana::lang('notifications.admin_new_comment.subject'),
-							Kohana::lang('notifications.admin_new_comment.message')
-							."\n\n'".utf8::strtoupper($incident->incident_title)."'"
-							."\n".url::base().'reports/view/'.$id
-						);
-
+					// HT: Ensure only valid comments not spam are sent out
+					// as notifications to the administrator
+					if ($comment_spam == 0) { 
+						$send = notifications::notify_admins(
+							"[".Kohana::config('settings.site_name')."] ".
+								Kohana::lang('notifications.admin_new_comment.subject'),
+								Kohana::lang('notifications.admin_new_comment.message')
+								."\n\n'".utf8::strtoupper($incident->incident_title)."'"
+								."\n".url::base().'reports/view/'.$id
+							);
+					}
 					// Redirect
 					url::redirect('reports/view/'.$id);
-
+				
 				}
 				else
 				{
@@ -625,14 +620,7 @@ class Reports_Controller extends Main_Controller {
 			$this->template->content->incident_category = $incident->incident_category;
 
 			// Incident rating
-			$rating = ORM::factory('rating')
-					->join('incident','incident.id','rating.incident_id','INNER')
-					->where('rating.incident_id',$incident->id)
-					->find();
-					
-			$this->template->content->incident_rating = ($rating->rating == '')
-				? 0
-				: $rating->rating;
+			$this->template->content->incident_rating = $this->_get_rating($incident->id, 'original');
 
 			// Retrieve Media
 			$incident_news = array();
@@ -698,7 +686,7 @@ class Reports_Controller extends Main_Controller {
 		// Javascript Header
 		$this->themes->map_enabled = TRUE;
 		$this->themes->photoslider_enabled = TRUE;
-		$this->themes->videoslider_enabled = TRUE;
+		$this->themes->validator_enabled = TRUE;
 		$this->themes->js = new View('reports/view_js');
 		$this->themes->js->incident_id = $incident->id;
 		$this->themes->js->default_map = Kohana::config('settings.default_map');
@@ -728,10 +716,6 @@ class Reports_Controller extends Main_Controller {
 
 		// If the Admin is Logged in - Allow for an edit link
 		$this->template->content->logged_in = $this->logged_in;
-
-		// Rebuild Header Block
-		$this->template->header->header_block = $this->themes->header_block();
-		$this->template->footer->footer_block = $this->themes->footer_block();
 	}
 
 	/**
@@ -741,10 +725,6 @@ class Reports_Controller extends Main_Controller {
 	{
 		$this->template->header->this_page = 'reports_submit';
 		$this->template->content = new View('reports/submit_thanks');
-
-		// Rebuild Header Block
-		$this->template->header->header_block = $this->themes->header_block();
-		$this->template->footer->footer_block = $this->themes->footer_block();
 	}
 
 	/**
@@ -786,11 +766,11 @@ class Reports_Controller extends Main_Controller {
 					// Has this User or IP Address rated this post before?
 					if ($this->user)
 					{
-						$filter = "user_id = ".$this->user->id;
+						$filter = array("user_id" => $this->user->id);
 					}
 					else
 					{
-						$filter = "rating_ip = '".$_SERVER['REMOTE_ADDR']."' ";
+						$filter = array("rating_ip" => $_SERVER['REMOTE_ADDR']);
 					}
 
 					if ($type == 'original')
@@ -927,37 +907,26 @@ class Reports_Controller extends Main_Controller {
 	 */
 	private function _get_rating($id = FALSE, $type = NULL)
 	{
-		if (!empty($id) AND ($type == 'original' OR $type == 'comment'))
-		{
-			if ($type == 'original')
-			{
-				$which_count = 'incident_id';
-			}
-			elseif ($type == 'comment')
-			{
-				$which_count = 'comment_id';
-			}
-			else
-			{
-				return 0;
-			}
-
-			$total_rating = 0;
-
-			// Get All Ratings and Sum them up
-			foreach (ORM::factory('rating')
-							->where($which_count,$id)
-							->find_all() as $rating)
-			{
-				$total_rating += $rating->rating;
-			}
-			
-			return $total_rating;
-		}
-		else
-		{
+		if (empty($id))
 			return 0;
+		
+		$total_rating = 0;
+		$result = FALSE;
+		
+		if ($type == 'original')
+		{
+			$result = $this->db->query('SELECT SUM(rating) as total_rating FROM rating WHERE incident_id = ?', $id);
 		}
+		elseif ($type == 'comment')
+		{
+			$result = $this->db->query('SELECT SUM(rating) as total_rating FROM rating WHERE comment_id = ?', $id);
+		}
+		
+		if ($result->count() == 0 OR $result->current()->total_rating == NULL) return 0;
+		
+		$total_rating = $result->current()->total_rating;
+		
+		return $total_rating;
 	}
 
 	/**

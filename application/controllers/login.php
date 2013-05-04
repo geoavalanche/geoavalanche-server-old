@@ -303,7 +303,7 @@ class Login_Controller extends Template_Controller {
 				// Existing User??
 				if ($user->loaded)
 				{
-
+					$email_sent = FALSE;
 					// Determine which reset method to use. The options are to use the RiverID server
 					//  or to use the normal method which just resets the password locally.
 					if (Kohana::config('riverid.enable') == TRUE AND ! empty($user->riverid))
@@ -315,7 +315,7 @@ class Login_Controller extends Template_Controller {
 
 						$riverid = new RiverID;
 						$riverid->email = $post->resetemail;
-						$riverid->requestpassword($message);
+						$email_sent = $riverid->requestpassword($message);
 					}
 					else
 					{
@@ -378,7 +378,17 @@ class Login_Controller extends Template_Controller {
 					//   changing their password
 
 					url::redirect("login?change_pw_success");
+					exit();
 				}
+				
+				$post->add_error('token', 'invalid');
+				
+				// repopulate the form fields
+				$form = arr::overwrite($form, $post->as_array());
+
+				// populate the error fields, if any
+				$errors = arr::merge($errors, $post->errors('auth'));
+				$form_error = TRUE;
 			}
 			else
 			{
@@ -757,7 +767,7 @@ class Login_Controller extends Template_Controller {
 							$openid_user->user_id = $user->id;
 							$openid_user->openid = "facebook_".$new_openid["id"];
 							$openid_user->openid_email = $new_openid["email"];
-							$openid_user->openid_server = "http://www.facebook.com";
+							$openid_user->openid_server = Kohana::config('config.external_site_protocol').'://www.facebook.com';
 							$openid_user->openid_date = date("Y-m-d H:i:s");
 							$openid_user->save();
 
@@ -832,12 +842,12 @@ class Login_Controller extends Template_Controller {
 		}
 	}
 
-    /**
-     * Create New password upon user request.
-     */
-    private function _new_password($user_id = 0, $password, $token)
-    {
-    	$auth = Auth::instance();
+	/**
+	 * Create New password upon user request.
+	 */
+	private function _new_password($user_id = 0, $password, $token)
+	{
+		$auth = Auth::instance();
 		$user = ORM::factory('user',$user_id);
 		if ($user->loaded == true)
 		{
@@ -859,7 +869,7 @@ class Login_Controller extends Template_Controller {
 				$riverid->new_password = $password;
 				if ($riverid->setpassword() == FALSE)
 				{
-					// TODO: Something went wrong. Tell the user.
+					return FALSE;
 				}
 
 			}
@@ -873,14 +883,12 @@ class Login_Controller extends Template_Controller {
 				}
 				else
 				{
-					// TODO: Something went wrong, tell the user.
+					return FALSE;
 				}
 			}
 
 			return TRUE;
 		}
-
-		// TODO: User doesn't exist, tell the user (meta, I know).
 
 		return FALSE;
 	}

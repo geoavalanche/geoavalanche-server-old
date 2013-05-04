@@ -125,6 +125,13 @@ class Manage_Controller extends Admin_Controller
 				// Test to see if things passed the rule checks
 				if ($category->validate($category_data) AND $post->validate(FALSE))
 				{
+					// Get Category position for a new category
+					if (empty($_POST['category_id']))
+					{
+						$cat_count = ORM::factory('category')->count_all();
+						$category->category_position = $cat_count;
+					}
+					
 					// Save the category
 					$category->save();
 					
@@ -344,13 +351,13 @@ class Manage_Controller extends Admin_Controller
 		$this->template->content->parents_array = $parents_array;
 
 		// Javascript Header
-		$this->template->colorpicker_enabled = TRUE;
-		$this->template->tablerowsort_enabled = TRUE;
-		$this->template->js = new View('admin/manage/categories/categories_js');
+		$this->themes->colorpicker_enabled = TRUE;
+		$this->themes->tablerowsort_enabled = TRUE;
+		$this->themes->js = new View('admin/manage/categories/categories_js');
 		$this->template->form_error = $form_error;
 
 		$this->template->content->locale_array = $locales;
-		$this->template->js->locale_array = $locales;
+		$this->themes->js->locale_array = $locales;
 	}
 	
 	/**
@@ -406,16 +413,18 @@ class Manage_Controller extends Admin_Controller
 			}
 		}
 	}
-	
+
 	/**
 	 * Manage Public Listing for External Applications
 	 */
 	public function publiclisting()
 	{
 		$this->template->content = new View('admin/manage/publiclisting');
-		
+
 		$this->template->content->encoded_stat_id = base64_encode(Settings_Model::get_setting('stat_id'));
 		$this->template->content->encoded_stat_key = base64_encode(Settings_Model::get_setting('stat_key'));
+		$this->template->content->lat = Settings_Model::get_setting('default_lat');
+		$this->template->content->lon = Settings_Model::get_setting('default_lon');
 	}
 
 
@@ -523,8 +532,8 @@ class Manage_Controller extends Admin_Controller
 		$this->template->content->errors = $errors;
 
 		// Javascript Header
-		$this->template->editor_enabled = TRUE;
-		$this->template->js = new View('admin/manage/pages/pages_js');
+		$this->themes->editor_enabled = TRUE;
+		$this->themes->js = new View('admin/manage/pages/pages_js');
 	}
 
 
@@ -627,8 +636,8 @@ class Manage_Controller extends Admin_Controller
 		$this->template->content->errors = $errors;
 
 		// Javascript Header
-		$this->template->colorpicker_enabled = TRUE;
-		$this->template->js = new View('admin/manage/feeds/feeds_js');
+		$this->themes->colorpicker_enabled = TRUE;
+		$this->themes->js = new View('admin/manage/feeds/feeds_js');
 	}
 
 	/**
@@ -663,8 +672,9 @@ class Manage_Controller extends Admin_Controller
 			if( $post->validate() )
 			{
 				$item_id = $this->input->post('item_id');
+				if (!is_array($item_id)) $item_id = array($item_id);
 
-				ORM::factory('feed_item')->delete($item_id);
+				ORM::factory('feed_item')->in('id', $item_id)->delete_all($item_id);
 
 				$form_saved = TRUE;
 				$form_action = utf8::strtoupper(Kohana::lang('ui_admin.deleted'));
@@ -695,7 +705,7 @@ class Manage_Controller extends Admin_Controller
 		$this->template->content->total_items = $pagination->total_items;
 
 		// Javascript Header
-		$this->template->js = new View('admin/manage/feeds/items_js');
+		$this->themes->js = new View('admin/manage/feeds/items_js');
 	}
 
 	/**
@@ -906,8 +916,8 @@ class Manage_Controller extends Admin_Controller
 		$this->template->content->layers = $layers;
 
 		// Javascript Header
-		$this->template->colorpicker_enabled = TRUE;
-		$this->template->js = new View('admin/manage/layers/layers_js');
+		$this->themes->colorpicker_enabled = TRUE;
+		$this->themes->js = new View('admin/manage/layers/layers_js');
 	}
 
 	/**

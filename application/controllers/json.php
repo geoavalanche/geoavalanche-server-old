@@ -44,6 +44,12 @@ class Json_Controller extends Template_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		
+		// Disable profiler
+		if (isset($this->profiler))
+		{
+			$this->profiler->disable();
+		}
 
 		// Set Table Prefix
 		$this->table_prefix = Kohana::config('database.default.table_prefix');
@@ -78,6 +84,7 @@ class Json_Controller extends Template_Controller {
 	{
 		$color = Kohana::config('settings.default_map_all');
 		$icon = "";
+		$markers = FALSE;
 		
 		if (Kohana::config('settings.default_map_all_icon_id'))
 		{
@@ -99,11 +106,15 @@ class Json_Controller extends Template_Controller {
 				$icon = url::convert_uploaded_to_abs($cat->category_image);
 			}
 		}
+		
+		$params = array('color' => $color, 'icon' => $icon);
+		Event::run('ushahidi_filter.json_alter_params', $params);
+		$color = $params['color'];
+		$icon = $params['icon'];
 
 		// Run event ushahidi_filter.json_replace_markers
 		// This allows a plugin to completely replace $markers
 		// If markers are added at this point we don't bother fetching incidents at all
-		$markers = FALSE;
 		Event::run('ushahidi_filter.json_replace_markers', $markers);
 
 		// Fetch the incidents
@@ -247,7 +258,7 @@ class Json_Controller extends Template_Controller {
 			// Get Incident Geometries
 			if ($include_geometries)
 			{
-				$geometry = $this->_get_geometry($marker->id, $marker->incident_title, $marker->incident_date);
+				$geometry = $this->get_geometry($marker->id, $marker->incident_title, $marker->incident_date, $link);
 				if (count($geometry))
 				{
 					foreach ($geometry as $g)
@@ -655,9 +666,10 @@ class Json_Controller extends Template_Controller {
 	 * @param int $incident_id
 	 * @param string $incident_title
 	 * @param int $incident_date
+	 * @param string $incident_link
 	 * @return array $geometry
 	 */
-	private function _get_geometry($incident_id, $incident_title, $incident_date)
+	protected function get_geometry($incident_id, $incident_title, $incident_date, $incident_link)
 	{
 		$geometry = array();
 		if ($incident_id)
@@ -671,14 +683,11 @@ class Json_Controller extends Template_Controller {
 				$geom_array = $geom->getGeoInterface();
 
 				$title = ($item->geometry_label) ? $item->geometry_label : $incident_title;
-				$link =  url::base()."reports/view/".$incident_id;
-				$item_name = $this->get_title($title, $link);
+				$item_name = $this->get_title($title, $incident_link);
 					
-				$fillcolor = ($item->geometry_color) ? 
-					utf8tohtml::convert($item->geometry_color,TRUE) : "ffcc66";
+				$fillcolor = ($item->geometry_color) ? $item->geometry_color : "ffcc66";
 					
-				$strokecolor = ($item->geometry_color) ? 
-					utf8tohtml::convert($item->geometry_color,TRUE) : "CC0000";
+				$strokecolor = ($item->geometry_color) ? $item->geometry_color : "CC0000";
 					
 				$strokewidth = ($item->geometry_strokewidth) ? $item->geometry_strokewidth : "3";
 
@@ -688,12 +697,12 @@ class Json_Controller extends Template_Controller {
 					'id' => $incident_id,
 					'feature_id' => $item->id,
 					'name' => $item_name,
-					'description' => utf8tohtml::convert($item->geometry_comment,TRUE),
+					'description' => $item->geometry_comment,
 					'color' => $fillcolor,
 					'icon' => '',
 					'strokecolor' => $strokecolor,
 					'strokewidth' => $strokewidth,
-					'link' => $link,
+					'link' => $incident_link,
 					'category' => array(0),
 					'timestamp' => strtotime($incident_date),
 				);
@@ -841,9 +850,7 @@ class Json_Controller extends Template_Controller {
 	 */
 	protected function get_title($title, $url)
 	{
-		$encoded_title = utf8tohtml::convert($title, TRUE);
-		$encoded_title = str_ireplace('"','&#34;',$encoded_title);
-		$item_name = "<a href='$url'>".$encoded_title."</a>";
+		$item_name = "<a href='$url'>".$title."</a>";
 		$item_name = str_replace(array(chr(10),chr(13)), ' ', $item_name);
 		return $item_name;
 	}

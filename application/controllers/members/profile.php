@@ -104,10 +104,10 @@ class Profile_Controller extends Members_Controller
 					$user->public_profile = $post->public_profile;
 					$user->color = $post->color;
 					$user->needinfo = $needinfo;
-					if ($post->new_password != '')
+					if (! empty($post->new_password))
 					{
 						$user->password = $post->new_password;
-					}					
+					}
 					$user->save();
 					//for plugins that want to know how the user now stands
 					Event::run('ushahidi_action.profile_edit_member', $user);
@@ -179,7 +179,7 @@ class Profile_Controller extends Members_Controller
 		$this->template->content->yesno_array = array('1'=>utf8::strtoupper(Kohana::lang('ui_main.yes')),'0'=>utf8::strtoupper(Kohana::lang('ui_main.no')));
 
 		// Javascript Header
-		$this->template->colorpicker_enabled = TRUE;
+		$this->themes->colorpicker_enabled = TRUE;
 	}
 
 	/**

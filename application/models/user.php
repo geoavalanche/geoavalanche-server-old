@@ -27,7 +27,7 @@ class User_Model extends Auth_User_Model {
 	 * @param   string  riverid user id
 	 * @return  object  ORM object from saving the user
 	 */
-	public static function create_user($email,$password,$riverid=false,$name=false)
+	public static function create_user($email, $password, $riverid=FALSE, $name=FALSE)
 	{
 		$user = ORM::factory('user');
 
@@ -35,12 +35,16 @@ class User_Model extends Auth_User_Model {
 		$user->username = User_Model::random_username();
 		$user->password = $password;
 
-		if ($name != false)
+		if (! empty($name))
 		{
 			$user->name = $name;
 		}
+		else
+		{
+			$user->needinfo = 1;
+		}
 
-		if ($riverid != false)
+		if ($riverid != FALSE)
 		{
 			$user->riverid = $riverid;
 		}
@@ -325,8 +329,12 @@ class User_Model extends Auth_User_Model {
 	 **/
 	public function has_permission($permission)
 	{
+		// Cache superadmin role to avoid repeating query
+		static $superadmin;
+		if (!isset($superadmin)) $superadmin = ORM::factory('role','superadmin');
+		
 		// Special case - superadmin ALWAYS has all permissions
-		if ($this->has(ORM::factory('role','superadmin')))
+		if ($this->has($superadmin))
 		{
 			return TRUE;
 		}
@@ -389,7 +397,7 @@ class User_Model extends Auth_User_Model {
 	 */
 	private function _forgot_password_token($salt = FALSE)
 	{
-		// Secret consists of email and the last_login field.
+		// Hashed datq consists of email and the last_login field
 		// So as soon as the user logs in again, the reset link expires automatically.
 		$salt = $salt ? $salt : text::random('alnum', 32); // Limited charset to keep it URL friendly
 		$key = Kohana::config('settings.forgot_password_secret');

@@ -526,6 +526,11 @@ class Incident_Model extends ORM {
 			->where('incident_id', $this->id)
 			->delete_all();
 
+		// Delete form responses
+		ORM::factory('form_response')
+			->where('incident_id', $this->id)
+			->delete_all();
+
 		$incident_id = $this->id;
 
 		// Action::report_delete - Deleted a Report
@@ -564,6 +569,18 @@ class Incident_Model extends ORM {
 		}
 		
 		return url::site('reports/view/'.$id);
+	}
+
+	/**
+	 * Overrides the default save method for the ORM.
+	 * 
+	 */
+	public function save()
+	{
+		// Fire an event on every save
+		Event::run('ushahidi_action.report_save', $this);
+		
+		parent::save();
 	}
 
 }
