@@ -410,11 +410,13 @@ class map_Core {
 		$layer->openlayers = "OSM.CycleMap";
 		$layer->title = 'OSM Cycling Map';
 		$layer->description = 'OpenStreetMap with highlighted bike lanes';
-		$layer->api_url = Kohana::config('core.site_protocol').'://www.openstreetmap.org/openlayers/OpenStreetMap.js';
+		// $layer->api_url = Kohana::config('core.site_protocol').'://www.openstreetmap.org/openlayers/OpenStreetMap.js';
+		$layer->api_url = Kohana::config('core.site_protocol').'://geoavalanche.org/incident/media/js/OpenStreetMap.js';
 		$layer->data = array(
 			'baselayer' => TRUE,
 			'attribution' => '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-			'url' => 'http://tile.openstreetmap.org/cycle/${z}/${x}/${y}.png',
+			//'url' => 'http://tile.openstreetmap.org/cycle/${z}/${x}/${y}.png',
+			'url' => 'http://a.tile3.opencyclemap.org/landscape/${z}/${x}/${y}.png',
 			'type' => '',
 			'transitionEffect' => 'resize',
 		);
