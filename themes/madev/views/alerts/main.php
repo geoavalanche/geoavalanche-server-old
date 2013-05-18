@@ -4,13 +4,11 @@
 		
 		<!-- start block -->
 		<div class="widget-box">
-			<div class="widget-title row-fluid">
-				<div class="pull-left">
-					<h5><i class="icon-cloud"></i> <?php echo Kohana::lang('ui_main.alerts_get'); ?></h5>
-				</div>
-				<div class="pull-right btn-group">
-					<a href="javascript:void(0)" class="btn btn-info"><i class="icon-chevron-down"></i></a>
-					<a href="javascript:void(0)" class="btn btn-info"><i class="icon-chevron-up"></i></a>
+			<div class="widget-title">
+				<h5><i class="icon-cloud"></i> <?php echo Kohana::lang('ui_main.alerts_get'); ?></h5>
+				<div class="widget-toolbar pull-right btn-group">
+					<a href="javascript:void(0)" class="btn btn-inverse"><i class="icon-chevron-down"></i></a>
+					<a href="javascript:void(0)" class="btn btn-inverse"><i class="icon-chevron-up"></i></a>
 				</div>
 			</div>
 			
@@ -33,7 +31,7 @@
 				<div class"row-fluid">
 					<div class="span6">
 						<legend><?php echo Kohana::lang('ui_main.alerts_step1_select_city'); ?></legend>
-						<div class="step-1 img-polaroid">
+						<div class="step-1">
 							<?php echo $alert_radius_view; ?>
 						</div>
 						<input type="hidden" id="alert_lat" name="alert_lat" value="<?php echo $form['alert_lat']; ?>">
@@ -80,7 +78,6 @@
 									echo '</div>';*/
 									
 									/* CUSTOM CODE */
-									
 									$form_field = "alert_category";
 									$columns = 1;
 									$enable_parents = TRUE;
@@ -145,15 +142,7 @@
 										}						
 									}									
 									$html .= '</div>';
-
 									echo $html;			
-									
-									
-									
-									
-									
-									
-									
 								?>
 								</div>
 							</div>
