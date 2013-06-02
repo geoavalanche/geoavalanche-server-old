@@ -69,7 +69,7 @@ $config['enable_hooks'] = TRUE;
  *  3 - Notices
  *  4 - Debugging
  */
-$config['log_threshold'] = 4;
+$config['log_threshold'] = 1;
 
 /**
  * Message logging directory.
@@ -116,6 +116,7 @@ $config['extension_prefix'] = 'MY_';
 $config['modules'] = array
 (
 	MODPATH.'auth',      // Authentication
+	MODPATH.'elasticsearch',      // Elasticsearch
 	// MODPATH.'forge',     // Form generation
 	// MODPATH.'formation',     // Form generation
 	// MODPATH.'kodoc',     // Self-generating documentation
