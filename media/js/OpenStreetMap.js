@@ -113,7 +113,7 @@ OpenLayers.Layer.OSM.Osmarender = OpenLayers.Class(OpenLayers.Layer.OSM, {
  */
 OpenLayers.Layer.OSM.OutdoorsMap = OpenLayers.Class(OpenLayers.Layer.OSM, {
     /**
-     * Constructor: OpenLayers.Layer.OSM.OutdoorsMap
+     * Constructor: OpenLayers.Layer.OSM.OutdoorMap
      *
      * Parameters:
      * name - {String}
@@ -133,7 +133,7 @@ OpenLayers.Layer.OSM.OutdoorsMap = OpenLayers.Class(OpenLayers.Layer.OSM, {
         OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
     },
 
-    CLASS_NAME: "OpenLayers.Layer.OSM.OutdoorsMap"
+    CLASS_NAME: "OpenLayers.Layer.OSM.OutdoorMap"
 });
 
 /**
