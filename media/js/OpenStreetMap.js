@@ -106,6 +106,37 @@ OpenLayers.Layer.OSM.Osmarender = OpenLayers.Class(OpenLayers.Layer.OSM, {
 });
 
 /**
+ * Class: OpenLayers.Layer.OSM.OutdoorsMap
+ *
+ * Inherits from:
+ *  - <OpenLayers.Layer.OSM>
+ */
+OpenLayers.Layer.OSM.OutdoorsMap = OpenLayers.Class(OpenLayers.Layer.OSM, {
+    /**
+     * Constructor: OpenLayers.Layer.OSM.OutdoorsMap
+     *
+     * Parameters:
+     * name - {String}
+     * options - {Object} Hashtable of extra options to tag onto the layer
+     */
+    initialize: function(name, options) {
+        var url = [
+            /**
+            * "http://a.tile.thunderforest.com/outdoors/${z}/${x}/${y}.png",
+            * "http://b.tile.thunderforest.com/outdoors/${z}/${x}/${y}.png",
+            * "http://c.tile.thunderforest.com/outdoors/${z}/${x}/${y}.png"
+            */
+            "http://a.tile.thunderforest.com/outdoors/${z}/${x}/${y}.png"
+        ];
+        options = OpenLayers.Util.extend({ numZoomLevels: 19 }, options);
+        var newArguments = [name, url, options];
+        OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
+    },
+
+    CLASS_NAME: "OpenLayers.Layer.OSM.OutdoorsMap"
+});
+
+/**
  * Class: OpenLayers.Layer.OSM.CycleMap
  *
  * Inherits from:
