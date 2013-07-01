@@ -111,7 +111,7 @@ OpenLayers.Layer.OSM.Osmarender = OpenLayers.Class(OpenLayers.Layer.OSM, {
  * Inherits from:
  *  - <OpenLayers.Layer.OSM>
  */
-OpenLayers.Layer.OSM.OutdoorsMap = OpenLayers.Class(OpenLayers.Layer.OSM, {
+OpenLayers.Layer.OSM.OutdoorMap = OpenLayers.Class(OpenLayers.Layer.OSM, {
     /**
      * Constructor: OpenLayers.Layer.OSM.OutdoorMap
      *
