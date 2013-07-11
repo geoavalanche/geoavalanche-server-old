@@ -2,11 +2,11 @@
 
 <?php
 	
-	$form = array();
+	$formCustom = array();
 	foreach (customforms::get_custom_forms() as $custom_forms){
 		$idForm = $custom_forms->id;
-		$form[] = $idForm;
-		$form[$idForm] = array("title" => $custom_forms->form_title, "fieldCustom" => array());
+		$formCustom[] = $idForm;
+		$formCustom[$idForm] = array("title" => $custom_forms->form_title, "fieldCustom" => array());
 	}
 
 	// If the user has insufficient permissions to edit report fields, we flag this for a warning message
@@ -16,17 +16,7 @@
 	
 	
 		$htmlField = "";
-		//if(isset($form[$field_property['form_id']])){
-		//	echo $field_property['form_id']."-".strtoupper($form[$field_property['form_id']]["title"])."<br />";
-		//}
-	
-		/*
-		foreach (customforms::get_custom_forms() as $custom_forms){
-			if($custom_forms->id == $field_property['form_id'])
-				echo "FORM:".$custom_forms->id."<br />";
-		}
-		*/
-	
+		
 		// Is the field required
 		$isrequired = ($field_property['field_required'])
 			? "<span class='required'> *</span>"
@@ -365,23 +355,23 @@
 		}
 		
 		
-		$form[$field_property['form_id']]["fieldCustom"][] = $htmlField;
+		$formCustom[$field_property['form_id']]["fieldCustom"][] = $htmlField;
 		
 	}
 	
 	//foreach ($form as $custom_forms){
 	foreach (customforms::get_custom_forms() as $custom_forms){
 		$idForm = $custom_forms->id;
-		if(count($form[$idForm]["fieldCustom"]) > 0){
+		if(count($formCustom[$idForm]["fieldCustom"]) > 0){
 			echo "<div class='accordion-group'>";
 			echo "<div class='accordion-heading'><a class='accordion-toggle' data-toggle='collapse' href='#boxForm".$idForm."'>";
-			echo "<i class='icon-edit'></i> ".strtoupper($form[$idForm]["title"])." (".count($form[$idForm]["fieldCustom"]).")";
+			echo "<i class='icon-edit'></i> ".strtoupper($formCustom[$idForm]["title"])." (".count($formCustom[$idForm]["fieldCustom"]).")";
 			echo "</a>";
 			echo "</div>";
 			echo "<div id='boxForm".$idForm."' class='accordion-body collapse out'>";
 			echo "<div class='accordion-inner'>";
-			for ($i = 0; $i < count($form[$idForm]["fieldCustom"]); ++$i) {
-				echo $form[$idForm]["fieldCustom"][$i];
+			for ($i = 0; $i < count($formCustom[$idForm]["fieldCustom"]); ++$i) {
+				echo $formCustom[$idForm]["fieldCustom"][$i];
 			}
 			echo "</div></div></div>";
 		}

@@ -4,18 +4,12 @@
 	// If the user has insufficient permissions to edit report fields, we flag this for a warning message
 	$show_permission_message = FALSE;
 
-	foreach ($disp_custom_fields as $field_id => $field_property)
-	{
+	foreach ($disp_custom_fields as $field_id => $field_property){
 	
 		// Is the field required
-		$isrequired = ($field_property['field_required'])
-			? "<span class='required'> *</span>"
-			: "";
-
+		$isrequired = ($field_property['field_required'])? "<span class='required'> *</span>": "";
 		// Private field
-		$isprivate = ($field_property['field_ispublic_visible'])
-			? '<span class="private">(' . Kohana::lang('ui_main.private') . ')</span>'
-			: '';
+		$isprivate = ($field_property['field_ispublic_visible'])? '<span class="private">(' . Kohana::lang('ui_main.private') . ')</span>': '';
 
 		// Workaround for situations where admin can view, but doesn't have sufficient perms to edit.
 		if (isset($custom_field_mismatch))
@@ -238,6 +232,9 @@
 			echo $html;
 			echo "</div>";
 		}
+		
+		
+		
 		elseif ($field_property['field_type'] == 8 )
 		{
 			//custom div
