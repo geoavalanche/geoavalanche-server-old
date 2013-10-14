@@ -111,7 +111,7 @@ class Search_Controller extends Main_Controller {
 				$search_query = "SELECT *, (".$keyword_string.") AS relevance FROM "
 								. $this->table_prefix."incident "
 								. "WHERE ".$where_string." "
-								. "ORDER BY relevance DESC LIMIT ?, ?";
+								. "ORDER BY incident_date DESC LIMIT ?, ?";
 			}
 		}
 		
