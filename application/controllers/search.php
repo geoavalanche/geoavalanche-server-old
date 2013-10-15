@@ -111,7 +111,7 @@ class Search_Controller extends Main_Controller {
 				$search_query = "SELECT *, (".$keyword_string.") AS relevance FROM "
 								. $this->table_prefix."incident "
 								. "WHERE ".$where_string." "
-								. "ORDER BY incident_date DESC LIMIT ?, ?";
+								. "ORDER BY relevance DESC LIMIT ?, ?";
 			}
 		}
 		
@@ -196,7 +196,7 @@ class Search_Controller extends Main_Controller {
 				$incident_date = date('D M j Y g:i:s a', strtotime($search->incident_date));
 
 				$html .= "<div class=\"search_result\">";
-				$html .= "<h3><a href=\"" . url::base() . "reports/view/" . $incident_id . "\">" . $highlight_title . "</a></h3>";
+				$html .= "<h3><a href=\"" . url::site( "reports/view/" . $incident_id) . "\">" . $highlight_title . "</a></h3>";
 				$html .= $highlight_description . " ...";
 				$html .= "<div class=\"search_date\">" . $incident_date . " | ".Kohana::lang('ui_admin.relevance').": <strong>+" . $search->relevance . "</strong></div>";
 				$html .= "</div>";
