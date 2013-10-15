@@ -24,7 +24,7 @@ if (@!is_writable(APPPATH.'cache'))
  *  -> Xcache
  */
 $config['default'] = array(
-	'driver' => 'file',
+	'driver' => 'memcache',
 	'params' => APPPATH.'cache',
 	'lifetime' => 1800,
 	'requests' => -1
