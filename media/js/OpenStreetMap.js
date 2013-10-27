@@ -106,6 +106,35 @@ OpenLayers.Layer.OSM.Osmarender = OpenLayers.Class(OpenLayers.Layer.OSM, {
 });
 
 /**
+ * Class: OpenLayers.Layer.OSM.OutdoorsMap
+ *
+ * Inherits from:
+ *  - <OpenLayers.Layer.OSM>
+ */
+OpenLayers.Layer.OSM.OutdoorMap = OpenLayers.Class(OpenLayers.Layer.OSM, {
+    /**
+     * Constructor: OpenLayers.Layer.OSM.OutdoorMap
+     *
+     * Parameters:
+     * name - {String}
+     * options - {Object} Hashtable of extra options to tag onto the layer
+     */
+    initialize: function(name, options) {
+        var url = [
+             "http://a.tile.thunderforest.com/outdoors/${z}/${x}/${y}.png",
+             "http://b.tile.thunderforest.com/outdoors/${z}/${x}/${y}.png",
+             "http://c.tile.thunderforest.com/outdoors/${z}/${x}/${y}.png"
+        ];
+            //"http://a.tile.thunderforest.com/outdoors/${z}/${x}/${y}.png"
+        options = OpenLayers.Util.extend({ numZoomLevels: 19 }, options);
+        var newArguments = [name, url, options];
+        OpenLayers.Layer.OSM.prototype.initialize.apply(this, newArguments);
+    },
+
+    CLASS_NAME: "OpenLayers.Layer.OSM.OutdoorMap"
+});
+
+/**
  * Class: OpenLayers.Layer.OSM.CycleMap
  *
  * Inherits from:
@@ -121,9 +150,12 @@ OpenLayers.Layer.OSM.CycleMap = OpenLayers.Class(OpenLayers.Layer.OSM, {
      */
     initialize: function(name, options) {
         var url = [
-            "http://a.andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png",
-            "http://b.andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png",
-            "http://c.andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png"
+            /**
+	    * "http://a.andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png",
+            * "http://b.andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png",
+            * "http://c.andy.sandbox.cloudmade.com/tiles/cycle/${z}/${x}/${y}.png"
+	    */
+	    "http://a.tile3.opencyclemap.org/landscape/${z}/${x}/${y}.png"
         ];
         options = OpenLayers.Util.extend({ numZoomLevels: 19 }, options);
         var newArguments = [name, url, options];
