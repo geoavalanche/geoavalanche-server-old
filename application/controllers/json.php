@@ -803,11 +803,11 @@ class Json_Controller extends Template_Controller {
 		foreach ($cluster as $marker)
 		{
 			// Normalising data
-			if (is_array($marker))
-			{
-				$marker = (object) $marker;
-			}
-
+ 		        if (is_array($marker))
+		        {
+		          $marker = (object) $marker;
+		        }
+ 
 			// Handle both reports::fetch_incidents() response and actual ORM objects
 			$latitude = isset($marker["latitude"]) ? $marker["latitude"] : $marker["location"]["latitude"];
 			$longitude = isset($marker["longitude"]) ? $marker["longitude"] : $marker["location"]["longitude"];
