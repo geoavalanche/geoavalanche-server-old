@@ -410,31 +410,27 @@ class map_Core {
 		$layer->openlayers = "OSM.CycleMap";
 		$layer->title = 'OSM Cycling Map';
 		$layer->description = 'OpenStreetMap with highlighted bike lanes';
-		// $layer->api_url = Kohana::config('core.site_protocol').'://www.openstreetmap.org/openlayers/OpenStreetMap.js';
-		$layer->api_url = Kohana::config('core.site_protocol').'://geoavalanche.org/incident/media/js/OpenStreetMap.js';
+		$layer->api_url = Kohana::config('core.site_protocol').'://www.openstreetmap.org/openlayers/OpenStreetMap.js';
 		$layer->data = array(
 			'baselayer' => TRUE,
 			'attribution' => '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-			//'url' => 'http://tile.openstreetmap.org/cycle/${z}/${x}/${y}.png',
-			'url' => 'http://a.tile3.opencyclemap.org/landscape/${z}/${x}/${y}.png',
+			'url' => 'http://tile.openstreetmap.org/cycle/${z}/${x}/${y}.png',
 			'type' => '',
 			'transitionEffect' => 'resize',
 		);
 		$layers[$layer->name] = $layer;
 
-                // OpenCycleMap Outdoors Map
+		// OpenCycleMap Outdoors Map
                 $layer = new stdClass();
                 $layer->active = TRUE;
                 $layer->name = 'osm_OutdoorMap';
                 $layer->openlayers = "OSM.OutdoorMap";
                 $layer->title = 'OSM Outdoor Map';
                 $layer->description = 'OpenStreetMap with highlighted mountains and huts';
-                // $layer->api_url = Kohana::config('core.site_protocol').'://www.openstreetmap.org/openlayers/OpenStreetMap.js';
                 $layer->api_url = Kohana::config('core.site_protocol').'://geoavalanche.org/incident/media/js/OpenStreetMap.js';
                 $layer->data = array(
                         'baselayer' => TRUE,
                         'attribution' => '&copy; <a href="http://www.thunderforest.com">Thunderforest Outdoors Map</a>',
-                        //'url' => 'http://tile.openstreetmap.org/cycle/${z}/${x}/${y}.png',
                         'url' => 'http://a.tile.thunderforest.com/outdoors/${z}/${x}/${y}.png',
                         'type' => '',
                         'transitionEffect' => 'resize',
